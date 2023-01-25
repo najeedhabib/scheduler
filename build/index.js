@@ -23,20 +23,18 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const scheduler_1 = require("./modules/scheduler");
-const csv_parser_1 = require("./modules/csv-parser");
-const commservice_1 = require("./modules/commservice");
+const modules_1 = require("./modules");
 const path = __importStar(require("path"));
-const csvPath = path.resolve(__dirname, 'data/customers.csv');
-const commServicePath = resolveCommServiceBinaryPath();
+const csvPath = path.resolve(__dirname, 'assets/data/customers.csv');
+const commServicePath = resolveCommServiceBinaryPath('assets/binary/commservice');
 (async () => {
     try {
-        const commService = new commservice_1.ProcessManager(commServicePath);
+        const commService = new modules_1.ProcessManager(commServicePath);
         const isCommServiceStarted = await commService.isStarted();
         console.log(isCommServiceStarted.toString());
-        const csv = new csv_parser_1.CSVparser;
+        const csv = new modules_1.CSVparser;
         const invoices = await csv.readInvoicesCSV(csvPath);
-        const scheduler = new scheduler_1.Scheduler();
+        const scheduler = new modules_1.Scheduler();
         const response = await scheduler.scheduleInvoices(invoices);
         commService.kill();
     }
@@ -44,7 +42,7 @@ const commServicePath = resolveCommServiceBinaryPath();
         console.log(error);
     }
 })();
-function resolveCommServiceBinaryPath() {
+function resolveCommServiceBinaryPath(dir) {
     const OS = process.platform.toString();
     let ext = 'mac';
     if (OS == "darwin") {
@@ -56,5 +54,5 @@ function resolveCommServiceBinaryPath() {
     else if (OS == "linux") {
         ext = "linux";
     }
-    return path.resolve(__dirname, `binary/commservice.${ext}`);
+    return path.resolve(__dirname, `${dir}.${ext}`);
 }

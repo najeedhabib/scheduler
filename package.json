@@ -8,7 +8,8 @@
     "build": "rimraf ./build && tsc && npm run copy-files",
     "start": "npm run build && node build/index.js",
     "test": "jest --config=jest.config.js",
-    "copy-files": "cp -R ./assets/ ./build/assets/"
+    "copy-files": "cp -R ./src/assets ./build/assets",
+    "scheduler": "node build/index.js"
   },
   "keywords": [],
   "author": "",
